@@ -5,8 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+const MongoClient = require('mongodb').MongoClient;
+const serverEnv = require('./serverEnv');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
+const api = require('./routes/api');
 
 var app = express();
 
@@ -24,6 +28,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/api', api);
+
+app.all('*', (req, res, next) => {
+  async function setDb () {
+	  let db = await MongoClient.connect(`${serverEnv.mongoHost}:${serverEnv.mongoPort}/${serverEnv.dbInfo.dbName}`);
+	  console.log('Connected correctly to server ==== root');
+	  req.db = db;
+	  next()
+  }
+  setDb();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

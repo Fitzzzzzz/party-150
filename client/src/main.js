@@ -3,6 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 
+import MuseUi from 'muse-ui'
+import 'muse-ui/dist/muse-ui.css'
+
+Vue.use(MuseUi)
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
