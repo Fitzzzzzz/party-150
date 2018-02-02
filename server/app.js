@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 const MongoClient = require('mongodb').MongoClient;
 const serverEnv = require('./serverEnv');
+const cors = require('cors');
+const fs = require('fs');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -25,6 +27,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.static(path.resolve(__dirname, './dist')))
+
+app.use(cors());
+
+// app.all('*', (req, res, next) => {
+//   const html = fs.readFileSync(path.resolve(__dirname, './dist/index.html', 'utf-8'))
+//   res.send(html)
+// })
 
 app.all('*', (req, res, next) => {
   async function setDb () {

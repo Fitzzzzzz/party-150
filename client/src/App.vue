@@ -3,6 +3,12 @@
     <mu-appbar title="150班同学聚会投票系统">
       <mu-icon-button icon="face" slot="left"/>
     </mu-appbar>
+    <mu-paper class="demo-paper" :zDepth="2">
+      请同学们选取自己空闲的事件<br>
+      请同学们使用中文完整姓名投票（以确保唯一性）<br>
+      选项为多选<br>
+      如果时间允许，推荐选2月10日
+    </mu-paper>
     <mu-table multiSelectable ref="table" id="table" @rowSelection="rowSelection">
       <mu-thead>
         <mu-tr>
@@ -47,9 +53,12 @@ export default {
   },
   methods: {
     tokenCheck () {
-      this.$http.get(`/api/token?name=${this.name}`).then(response => {
-        response.data.errcode === 0 ? this.hadLogin = false : this.errText = '该同学已经投过票'
-      })
+      let reg = /^[\u4e00-\u9fa5]+$/
+      if (reg.test(this.name)) {
+        this.$http.get(`/api/token?name=${this.name}`).then(response => {
+          response.data.errcode === 0 ? this.hadLogin = false : this.errText = response.data.msg
+        })
+      } else this.errText = '请使用中文姓名'
     },
     rowSelection (selectedRowsIndex) {
       this.time = selectedRowsIndex
@@ -86,5 +95,12 @@ export default {
   }
   #table {
     border: 1px solid gainsboro;
+  }
+  .demo-paper {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    color: brown;
+    padding: 10px;
   }
 </style>

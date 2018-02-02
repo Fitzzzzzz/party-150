@@ -9,16 +9,22 @@ const match = (val, arr) => {
 }
 
 async function token (req, res) {
-  let query = req.query, db = req.db, col, docs, name;
-  try {
-    name = query.name;
+  let query = req.query, db = req.db, col, docs;
+  let name = query.name;
+  if (!name || name.length < 1) {
+    return res.send({
+      errcode: 1,
+      msg: '姓名为空'
+    })
+  }
+  try {;
     col = await db.collection(serverEnv.dbInfo.dbCol);
     docs = await col.find().toArray();
     db.close();
     if (match(name, docs)) {
       res.send({
         errcode: 1,
-        msg: '该用户已经投过票'
+        msg: '该同学已经投过票'
       })
     } else {
       res.send({
