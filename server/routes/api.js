@@ -1,4 +1,4 @@
-const router = express.Router(),
+const router = require('express').Router(),
       serverEnv = require('../serverEnv'),
       assert = require('assert');
 
@@ -9,9 +9,9 @@ const match = (val, arr) => {
 }
 
 async function token (req, res) {
-  let body = req.body, db = req.db, col, docs, name;
+  let query = req.query, db = req.db, col, docs, name;
   try {
-    name = body.name;
+    name = query.name;
     col = await db.collection(serverEnv.dbInfo.dbCol);
     docs = await col.find().toArray();
     db.close();
@@ -35,7 +35,9 @@ async function token (req, res) {
 async function save (req, res) {
   let db = req.db, body = req.body, rowcheck, col, docs;
   let dbName = body.name, dbTime = body.time;
-  if (!name || !time.length) {
+  // console.log(body)
+  // return
+  if (!dbName || !dbTime.length) {
     return res.send({
       errcode: 1,
       msg: '信息不全'
@@ -49,11 +51,11 @@ async function save (req, res) {
     })
     assert.equal(1, rowcheck.insertedCount);
     let result = rowcheck.insertedCount === 1 ? {
-      errorcode: 0,
-      msg: 'saved'
+      errcode: 0,
+      msg: '投票成功！'
     } : {
-      errorcode: 3,
-      msg: 'system error'
+      errcode: 3,
+      msg: '系统错误，请稍后再试'
     }
     res.send(result);
   } catch (error) {
@@ -67,20 +69,22 @@ router.get('/show', (req, res) => {
     try {
       let col = await req.db.collection(serverEnv.dbInfo.dbCol);
       let docs = await col.find().toArray();
-      req.send(docs)
+      res.send(docs)
     } catch (error) {
       console.log(error.stack);
       res.status(500).end();
     }
   }
   show()
+  // console.log(req.db)
+  // res.status(200).end()
 })
 
 router.get('/token', (req, res) => {
   token(req, res);
 })
 
-routet.post('/save', (req, res) => {
+router.post('/save', (req, res) => {
   save(req, res);
 })
 

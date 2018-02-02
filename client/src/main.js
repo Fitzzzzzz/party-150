@@ -6,7 +6,10 @@ import App from './App'
 import MuseUi from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 
+import axios from 'axios'
+
 Vue.use(MuseUi)
+Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 

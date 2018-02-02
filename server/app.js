@@ -26,19 +26,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
-app.use('/api', api);
-
 app.all('*', (req, res, next) => {
   async function setDb () {
 	  let db = await MongoClient.connect(`${serverEnv.mongoHost}:${serverEnv.mongoPort}/${serverEnv.dbInfo.dbName}`);
 	  console.log('Connected correctly to server ==== root');
-	  req.db = db;
+    req.db = db;
 	  next()
   }
   setDb();
 });
+
+
+app.use('/', index);
+app.use('/users', users);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
