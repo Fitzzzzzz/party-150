@@ -9,4 +9,8 @@ router.get('/', function(req, res, next) {
   res.send(html)
 });
 
+router.get('/show', (req, res) => {
+  res.render('index')
+})
+
 module.exports = router;

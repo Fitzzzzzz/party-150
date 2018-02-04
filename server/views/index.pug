@@ -1,5 +1,38 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div(id="main" style="width: 600px;height:400px;")
+  script.
+    var _json = !{json}
+    var nums = new Array(5).fill(0);
+    _json.forEach(function (element) {
+      element.time.forEach(function (val) {
+        nums[val]++
+      })
+    })
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        title: {
+            text: '总人数：' + _json.length
+        },
+        tooltip: {},
+        legend: {
+            data:['人数']
+        },
+        xAxis: {
+            data: ["2月10号","2月11号","2月13号","2月18号","2月19号"]
+        },
+        yAxis: {},
+        series: [{
+            name: '人数',
+            type: 'bar',
+            data: nums
+        }]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+    console.log(_json)

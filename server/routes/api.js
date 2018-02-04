@@ -75,7 +75,7 @@ router.get('/show', (req, res) => {
     try {
       let col = await req.db.collection(serverEnv.dbInfo.dbCol);
       let docs = await col.find().toArray();
-      res.send(docs)
+      res.render('index', { json: JSON.stringify(docs) })
     } catch (error) {
       console.log(error.stack);
       res.status(500).end();
